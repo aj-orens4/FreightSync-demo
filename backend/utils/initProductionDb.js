@@ -22,4 +22,4 @@ async function main() {
     console.log('FreightSync production schema initialized successfully');
   } finally { await conn.end(); }
 }
-main().catch(err => { console.error('Database initialization failed:', err.code || err.message); process.exit(1); });
+main().catch(err => { console.error('Database initialization failed:', err.code || 'UNKNOWN', String(err.message || '').slice(0, 350)); process.exit(1); });
