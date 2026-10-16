@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — FreightSync</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content settings-page-content">
+      <div class="settings-layout">
+        <aside class="settings-nav-panel">
+          <h2>Settings</h2>
+          <button class="settings-nav-item active" data-settings-tab="account"><span>◎</span><div><strong>Account</strong><small>Profile and account information</small></div></button>
+          <button class="settings-nav-item" data-settings-tab="security"><span>▣</span><div><strong>Security</strong><small>Password and sign-in security</small></div></button>
+          <button class="settings-nav-item" data-settings-tab="appearance"><span>◐</span><div><strong>Appearance</strong><small>Theme, colors and dashboard</small></div></button>
+          <button class="settings-nav-item" data-settings-tab="notifications"><span>♢</span><div><strong>Notifications</strong><small>Browser reminder alerts</small></div></button>
+          <button class="settings-nav-item" data-settings-tab="backup" id="settings-backup-nav" hidden><span>▤</span><div><strong>Backup &amp; Recovery</strong><small>Administrator · data protection</small></div></button>
+        </aside>
+        <section class="settings-workspace">
+          <div class="first-login-notice" id="first-login-notice" style="display:none"><strong>Finish securing your account</strong><br>Change the temporary password assigned by your administrator. After saving a strong new password, FreightSync will unlock your dashboard and permitted modules.</div>
+          <div class="settings-tab active" id="settings-tab-account">
+            <div class="settings-page-heading"><h2>Account</h2><p>Your account information and assigned access.</p></div>
+            <div class="settings-section profile-card"><div class="profile-photo-editor"><div class="profile-photo-preview" id="profile-photo-preview">FS</div><div><strong>Profile photo</strong><p class="settings-desc">PNG, JPEG or WebP, maximum 1 MB.</p><input type="file" id="profile-photo-input" accept="image/png,image/jpeg,image/webp"><button type="button" class="btn outline small" id="btn-upload-photo">Save Photo</button></div></div><div class="settings-section-heading"><div><h3>Profile</h3><p class="settings-desc">Account identity used throughout FreightSync.</p></div><button type="button" class="btn outline small" id="btn-edit-profile">Change Name</button></div>
+              <div class="profile-info-grid"><div class="profile-info"><span>Full Name</span><strong id="profile-name-view">—</strong><input type="text" id="profile-full-name" maxlength="100" hidden></div><div class="profile-info"><span>Username</span><strong id="profile-username">—</strong></div><div class="profile-info"><span>Email</span><strong id="profile-email">—</strong></div><div class="profile-info"><span>Role</span><strong id="profile-role">—</strong></div><div class="profile-info"><span>Provider Assignment</span><strong id="profile-provider">—</strong></div><div class="profile-info"><span>Account Status</span><strong id="profile-status">—</strong></div></div>
+              <div class="profile-edit-actions" id="profile-edit-actions" hidden><button type="button" class="btn outline" id="btn-cancel-profile">Cancel</button><button type="button" class="btn accent" id="btn-save-profile">Save Change</button></div>
+            </div>
+          </div>
+          <div class="settings-tab" id="settings-tab-security"><div class="settings-page-heading"><h2>Security</h2><p>Manage your password and sign-in security.</p></div><div class="settings-section"><h3>Change your password</h3><p class="settings-desc">All fields are required. Use at least 8 characters with uppercase, lowercase, a number, and a special character.</p><div class="field"><label>Current Password *</label><input type="password" id="current-password" autocomplete="current-password"></div><div class="field"><label>New Password *</label><input type="password" id="new-password" minlength="8" maxlength="72" autocomplete="new-password"></div><div id="password-strength" class="password-feedback">Minimum 8 characters with uppercase, lowercase, number, and special character.</div><div class="field"><label>Confirm Password *</label><input type="password" id="confirm-password" minlength="8" maxlength="72" autocomplete="new-password"></div><div class="settings-save-row"><button type="button" class="btn accent" id="btn-change-password">Save Password</button></div></div></div>
+          <div class="settings-tab" id="settings-tab-appearance"><div class="settings-page-heading"><h2>Appearance</h2><p>Personalize how FreightSync looks on this device.</p></div>
+            <div class="settings-section"><h3>Theme</h3><div class="theme-toggle"><div class="theme-option" data-theme-choice="light" id="theme-option-light">Light</div><div class="theme-option" data-theme-choice="dark" id="theme-option-dark">Dark</div></div></div>
+            <div class="settings-section"><h3>Text Size</h3><div class="theme-toggle"><div class="theme-option" data-font-choice="small" id="font-option-small">Small</div><div class="theme-option" data-font-choice="medium" id="font-option-medium">Medium</div><div class="theme-option" data-font-choice="large" id="font-option-large">Large</div></div></div>
+            <div class="settings-section"><h3>Accent &amp; Brand Color</h3><div class="color-picker-row"><label for="picker-accent">Accent</label><input type="color" id="picker-accent" value="#2563EB"><div class="preset-swatches" data-target="accent"><span class="preset-swatch" style="background:#2563EB" data-color="#2563EB"></span><span class="preset-swatch" style="background:#F97316" data-color="#F97316"></span><span class="preset-swatch" style="background:#22C55E" data-color="#22C55E"></span><span class="preset-swatch" style="background:#8438c9" data-color="#8438c9"></span><span class="preset-swatch" style="background:#c9385a" data-color="#c9385a"></span></div></div><div class="color-picker-row"><label for="picker-navy">Sidebar / Brand</label><input type="color" id="picker-navy" value="#0F172A"><div class="preset-swatches" data-target="navy"><span class="preset-swatch" style="background:#0F172A" data-color="#0F172A"></span><span class="preset-swatch" style="background:#1f2a1c" data-color="#1f2a1c"></span><span class="preset-swatch" style="background:#2c1a2e" data-color="#2c1a2e"></span><span class="preset-swatch" style="background:#231b12" data-color="#231b12"></span></div></div><div class="settings-preview" id="settings-preview"></div></div>
+            <div class="settings-section"><h3>Dashboard Widgets</h3><div class="widget-toggle-grid"><label class="widget-toggle"><input type="checkbox" data-widget-key="kpis" checked> Summary Cards</label><label class="widget-toggle"><input type="checkbox" data-widget-key="map" checked> Service Network Map</label><label class="widget-toggle"><input type="checkbox" data-widget-key="activity" checked> Recent Activity</label><label class="widget-toggle"><input type="checkbox" data-widget-key="routeChart" checked> Route Status Chart</label><label class="widget-toggle"><input type="checkbox" data-widget-key="scheduleChart" checked> Schedule Outcomes</label><label class="widget-toggle"><input type="checkbox" data-widget-key="upcoming" checked> Upcoming Schedules</label></div></div><div class="settings-save-row"><button class="btn outline" id="btn-reset">Reset to Default</button><button class="btn accent" id="btn-save">Save Changes</button></div>
+          </div>
+          <div class="settings-tab" id="settings-tab-notifications"><div class="settings-page-heading"><h2>Notifications</h2><p>Control reminder alerts for this browser.</p></div><div class="settings-section"><h3>Browser Notifications</h3><p class="settings-desc">Receive an alert when a pinned calendar reminder is due.</p><div style="display:flex;align-items:center;gap:12px"><span id="notif-status-badge" class="badge">Checking…</span><button type="button" class="btn outline small" id="btn-settings-enable-notifs">Enable Browser Notifications</button></div></div></div>
+          <div class="settings-tab" id="settings-tab-backup"><div class="settings-page-heading"><h2>Backup &amp; Recovery</h2><p>Administrator-only database protection and recovery operations.</p></div>
+          <div class="recovery-status-grid"><div class="recovery-stat"><span>Last successful backup export</span><strong id="last-backup-at">Not recorded</strong><small>Timestamp from the audit trail</small></div><div class="recovery-stat"><span>Last successful restoration</span><strong id="last-restore-at">Not recorded</strong><small>Timestamp from the audit trail</small></div></div>
+          <div class="report-grid"><section class="settings-section"><div class="recovery-feature-icon">↓</div><h3>Export a backup</h3><p class="settings-desc">Download a JSON snapshot of FreightSync application data. Keep it in a secure location outside the server.</p><button class="btn accent" id="create-backup" type="button">Create &amp; Download Backup</button></section><section class="settings-section"><div class="recovery-feature-icon">↺</div><h3>Restore application data</h3><p class="settings-desc">Destructive operation: replaces current records. Export a safety copy first.</p><input type="file" id="restore-file" accept="application/json,.json"><button class="btn outline" id="restore-backup" type="button">Validate &amp; Restore</button></section></div>
+          <section class="settings-section"><h3>Recovery activity</h3><p class="settings-desc">Completed backup exports and restores recorded in Security Audit. Files are downloaded to your device; FreightSync does not store downloadable backup files on the server.</p><div id="recovery-history" class="recovery-history">Loading history…</div></section></div>
+        </section>
+      </div>
+    </div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/backup.js"></script>
+</body>
+</html>

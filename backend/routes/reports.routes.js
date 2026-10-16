@@ -1,0 +1,1 @@
+const r=require('express').Router();const c=require('../controllers/reports.controller');const {authenticate,authorize}=require('../middleware/auth');r.use(authenticate,authorize('ADMIN','LOGISTICS_MANAGER'));r.get('/summary',c.summary);module.exports=r;

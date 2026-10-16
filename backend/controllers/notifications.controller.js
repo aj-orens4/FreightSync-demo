@@ -1,0 +1,4 @@
+const pool=require('../config/db'); const {ok}=require('../utils/response');
+exports.list=async(req,res,next)=>{try{const [rows]=await pool.query('SELECT * FROM notifications WHERE user_id=? ORDER BY date_created DESC LIMIT 100',[req.user.user_id]); const [[count]]=await pool.query('SELECT COUNT(*) unread FROM notifications WHERE user_id=? AND is_read=0',[req.user.user_id]); return ok(res,{items:rows,unread:Number(count.unread)});}catch(e){next(e)}};
+exports.readOne=async(req,res,next)=>{try{await pool.query('UPDATE notifications SET is_read=1 WHERE notification_id=? AND user_id=?',[req.params.id,req.user.user_id]); return ok(res,{notification_id:Number(req.params.id)});}catch(e){next(e)}};
+exports.readAll=async(req,res,next)=>{try{await pool.query('UPDATE notifications SET is_read=1 WHERE user_id=?',[req.user.user_id]); return ok(res,{read:true});}catch(e){next(e)}};

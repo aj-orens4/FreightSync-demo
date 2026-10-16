@@ -1,0 +1,46 @@
+/* FreightSync Studio: 2026 cohesive, light-first workspace. Functional DOM IDs preserved. */
+:root{--studio-blue:#316cf4;--studio-ink:#14243b;--studio-soft:#f5f7fc;--studio-line:#e5eaf3}
+body:not(.dark),body{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+.fs-command-home,.fs-report-studio,.fs-support-desk{max-width:1520px!important;margin:auto!important;padding:28px clamp(18px,3vw,42px) 70px!important}
+.fs-home-masthead,.fs-report-studio .fs-page-intro,.fs-support-desk .fs-page-intro{background:transparent!important;box-shadow:none!important;border:0!important;border-radius:0!important;color:var(--text)!important;padding:4px 0 14px!important;margin:0 0 20px!important;overflow:visible!important}
+.fs-home-masthead:after{display:none!important}
+.fs-home-masthead__label{color:#627b9a!important;letter-spacing:.13em!important;margin:0 0 7px!important;font-size:10px!important}
+.fs-home-masthead .greeting-text{color:var(--text)!important;font-size:clamp(24px,2.6vw,32px)!important;font-weight:750!important}
+.fs-home-masthead .greeting-sub{color:var(--text-muted)!important;font-size:13px!important;margin-top:6px!important}
+.fs-home-masthead .dashboard-quick-actions{gap:9px!important}
+.fs-home-masthead .dashboard-quick-actions .btn{background:var(--panel)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:0 3px 12px rgba(25,49,81,.04)!important;padding:10px 13px!important}
+.fs-home-masthead .dashboard-quick-actions .btn:hover{background:var(--surface-2)!important}
+.fs-action-icon{font-size:16px!important}
+.fs-command-home .role-dashboard-hero{background:var(--panel)!important;border:1px solid var(--border)!important;border-radius:17px!important;padding:22px 26px!important;box-shadow:0 8px 25px rgba(24,48,82,.045)!important}
+.fs-command-home .role-dashboard-hero h2{font-size:21px!important}
+.fs-command-home .role-context{background:var(--surface-2)!important;border:1px solid var(--border)!important;font-size:12px!important}
+.fs-section-title{margin:25px 0 13px!important}.fs-section-title span{color:#5c82c9!important;font-size:9px!important}.fs-section-title h3{font-size:18px!important}
+.fs-command-home .stat-grid,.fs-report-studio .kpi-grid,.fs-support-desk .kpi-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;width:100%!important;align-items:stretch!important}
+.fs-command-home .stat-card,.fs-report-studio .kpi-card,.fs-support-desk .kpi-card{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;min-width:0!important;min-height:118px!important;height:auto!important;margin:0!important;padding:19px 20px!important;background:var(--panel)!important;border:1px solid var(--studio-line)!important;border-radius:16px!important;box-shadow:0 6px 24px rgba(30,58,98,.045)!important;overflow:hidden!important}
+.fs-command-home .stat-card:before{display:none!important}
+.fs-command-home .stat-card .value{font-size:30px!important;line-height:1.1!important;margin:0 0 12px!important;color:var(--text)!important}
+.fs-command-home .stat-card .label{font-size:12px!important;line-height:1.5!important;color:var(--text-muted)!important}
+.fs-report-studio .kpi-card span,.fs-support-desk .kpi-card span{display:block!important;font-size:12px!important;line-height:1.5!important;color:var(--text-muted)!important;font-weight:600!important;margin:0 0 9px!important}
+.fs-report-studio .kpi-card strong,.fs-support-desk .kpi-card strong{display:block!important;font-size:clamp(24px,2.4vw,31px)!important;line-height:1.15!important;letter-spacing:-.04em!important;color:var(--text)!important;margin:0 0 6px!important;font-weight:760!important}
+.fs-report-studio .kpi-card small,.fs-support-desk .kpi-card small{font-size:11px!important;color:var(--text-muted)!important}
+.fs-report-studio .fs-page-intro h2,.fs-support-desk .fs-page-intro h2{color:var(--text)!important;font-size:27px!important;margin:4px 0 7px!important}
+.fs-report-studio .fs-page-intro p,.fs-support-desk .fs-page-intro p{color:var(--text-muted)!important;font-size:13px!important}
+.fs-report-studio .fs-page-intro .fs-eyebrow,.fs-support-desk .fs-page-intro .fs-eyebrow{color:#5482d2!important}
+.fs-report-studio .fs-page-intro .btn,.fs-support-desk .fs-page-intro .btn{background:var(--studio-blue)!important;color:#fff!important;border-color:var(--studio-blue)!important;border-radius:11px!important;padding:11px 17px!important}
+.fs-report-studio .fs-tabbar,.fs-support-desk .fs-tabbar{background:var(--panel)!important;border:1px solid var(--border)!important;border-radius:12px!important;padding:5px!important;box-shadow:none!important;margin:14px 0 20px!important}
+.fs-report-studio .fs-tab,.fs-support-desk .fs-tab{background:transparent!important;color:var(--text-muted)!important;border-radius:8px!important;font-size:12px!important}
+.fs-report-studio .fs-tab.active,.fs-support-desk .fs-tab.active{background:#e8efff!important;color:#2459d3!important}
+.fs-command-home .widget-card,.fs-command-home .panel,.fs-report-studio .panel,.fs-support-desk .panel{background:var(--panel)!important;border:1px solid var(--studio-line)!important;border-radius:17px!important;box-shadow:0 7px 24px rgba(30,58,98,.04)!important}
+.fs-report-studio .report-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px!important}
+.fs-report-studio .report-grid .panel{min-height:220px!important;padding:23px!important}
+.fs-report-studio .fs-list-panel,.fs-support-desk .fs-list-panel{padding:23px!important}
+.fs-support-desk .fs-search{min-width:250px!important}
+.fs-support-desk table th,.fs-report-studio table th{background:var(--surface-2)!important}
+.fs-report-studio .kpi-card,.fs-support-desk .kpi-card{position:relative}
+.fs-report-studio .kpi-card:after,.fs-support-desk .kpi-card:after{content:'';position:absolute;right:18px;top:19px;width:9px;height:9px;border-radius:50%;background:#7fa4ff;box-shadow:0 0 0 6px rgba(89,131,235,.09)}
+.fs-support-desk .kpi-card:nth-child(2):after{background:#f3b866;box-shadow:0 0 0 6px rgba(243,184,102,.13)}
+.fs-support-desk .kpi-card:nth-child(3):after{background:#56bca3;box-shadow:0 0 0 6px rgba(86,188,163,.12)}
+.fs-support-desk .kpi-card:nth-child(4):after{background:#a5b2c7;box-shadow:0 0 0 6px rgba(165,178,199,.12)}
+.fs-command-home .map-card__map{min-height:350px}
+@media(max-width:1080px){.fs-command-home .stat-grid,.fs-report-studio .kpi-grid,.fs-support-desk .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.fs-command-home,.fs-report-studio,.fs-support-desk{padding:16px!important}.fs-command-home .stat-grid,.fs-report-studio .kpi-grid,.fs-support-desk .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.fs-report-studio .report-grid{grid-template-columns:1fr!important}.fs-report-studio .kpi-card,.fs-support-desk .kpi-card,.fs-command-home .stat-card{padding:14px!important;min-height:105px!important}.fs-home-masthead .greeting-row{align-items:flex-start!important}.fs-home-masthead .dashboard-quick-actions{width:100%;flex-wrap:wrap}.fs-report-studio .fs-page-intro,.fs-support-desk .fs-page-intro{display:flex;flex-direction:column;align-items:flex-start!important}.fs-support-desk .fs-search{min-width:0!important}}

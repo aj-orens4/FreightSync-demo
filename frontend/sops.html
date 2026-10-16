@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOPs — FreightSync</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="filters">
+            <input type="text" id="filter-q" placeholder="Search title/description">
+            <select id="filter-category">
+              <option value="">All Categories</option>
+              <option>Safety</option><option>Route Handling</option><option>Documentation</option><option>Emergency</option>
+            </select>
+            <select id="filter-status">
+              <option value="">All Statuses</option>
+              <option>Draft</option><option>Submitted</option><option>Approved</option><option>Rejected</option><option>Published</option><option>Archived</option>
+            </select>
+          </div>
+          <button class="btn accent" id="btn-new-sop">+ New SOP</button>
+        </div>
+
+        <table>
+          <thead><tr><th>Code</th><th>Title</th><th>Category</th><th>Version</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+          <tbody id="sops-body"><tr><td colspan="7" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sop-modal">
+  <div class="modal">
+    <h3>New SOP</h3>
+    <form id="sop-form">
+      <div class="field"><label>Title</label><input type="text" id="s-title" required></div>
+      <div class="field">
+        <label>Category</label>
+        <select id="s-category" required>
+          <option value="">Select category</option>
+          <option>Safety</option><option>Route Handling</option><option>Documentation</option><option>Emergency</option>
+        </select>
+      </div>
+      <div class="field"><label>Description</label><textarea id="s-description" rows="4"></textarea></div>
+      <div class="modal-actions">
+        <button type="button" class="btn outline" id="btn-cancel-sop">Cancel</button>
+        <button type="submit" class="btn accent">Save Draft</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/sops.js"></script>
+</body>
+</html>

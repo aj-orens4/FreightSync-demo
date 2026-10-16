@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar — FreightSync</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content">
+      <div class="notif-banner" id="notif-banner" style="display:none">
+        <span>Get a real-time alert when a reminder is due, even if this tab isn't focused.</span>
+        <button class="btn small accent" id="btn-enable-notifs">Enable Notifications</button>
+      </div>
+
+      <div class="panel calendar-panel">
+        <div class="calendar-toolbar">
+          <button class="btn outline small" id="btn-prev-month">&larr; Prev</button>
+          <h2 id="calendar-month-label">—</h2>
+          <div style="display:flex; gap:8px;">
+            <button class="btn outline small" id="btn-today">Today</button>
+            <button class="btn accent small" id="btn-add-reminder">+ Add Reminder</button>
+            <button class="btn outline small" id="btn-next-month">Next &rarr;</button>
+          </div>
+        </div>
+        <div class="calendar-legend"><span><i class="legend-dot schedule"></i>Freight schedules</span><span><i class="legend-dot reminder"></i>Personal reminders</span><span class="calendar-hint">Select a day to view details or add a reminder.</span></div>
+        <div class="calendar-grid" id="calendar-grid">
+          <div class="empty-state">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day detail modal -->
+<div class="modal-overlay" id="day-modal">
+  <div class="modal day-detail-modal">
+    <div class="day-detail-head"><div><span class="day-detail-kicker">Day overview</span><h3 id="day-modal-title">Schedules</h3></div><button type="button" class="modal-x" id="btn-close-day" aria-label="Close">×</button></div>
+    <div class="day-detail-content">
+      <section class="day-detail-section"><div class="day-section-head"><div><h4>Freight Schedules</h4><p>Departures and arrivals planned for this date.</p></div><span class="section-count" id="day-schedule-count">0</span></div><div id="day-schedule-list" class="day-schedule-list"></div></section>
+      <section class="day-detail-section"><div class="day-section-head"><div><h4>Personal Reminders</h4><p>Your private tasks and follow-ups for this date.</p></div><span class="section-count" id="day-reminder-count">0</span></div><div id="day-reminders-list" class="day-reminders-list"></div></section>
+    </div>
+    <div class="day-detail-actions"><button type="button" class="btn accent" id="btn-add-reminder-for-day">+ Add Reminder</button></div>
+  </div>
+</div>
+
+<!-- Add/Edit Reminder modal -->
+<div class="modal-overlay" id="reminder-modal">
+  <div class="modal">
+    <h3 id="reminder-modal-title">Add Reminder</h3>
+    <form id="reminder-form">
+      <input type="hidden" id="reminder-id">
+      <div class="field"><label>Title</label><input type="text" id="reminder-title" maxlength="150" required></div>
+      <div class="field"><label>Note (optional)</label><textarea id="reminder-note" rows="3" maxlength="500"></textarea></div>
+      <div class="field"><label>Date &amp; Time</label><input type="datetime-local" id="reminder-datetime" required></div>
+      <div class="modal-actions" style="justify-content:space-between">
+        <button type="button" class="btn outline danger-text" id="btn-delete-reminder" style="display:none">Delete</button>
+        <div style="display:flex; gap:8px">
+          <button type="button" class="btn outline" id="btn-cancel-reminder">Cancel</button>
+          <button type="submit" class="btn accent">Save Reminder</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/calendar.js"></script>
+</body>
+</html>

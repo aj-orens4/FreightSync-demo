@@ -1,0 +1,5 @@
+# FreightSync focused redesign and OTP fix
+
+Implemented: 401 handling no longer logs out users for a wrong OTP or resend response; invalid OTP stays on verification page, with inline error; backend differentiates invalid vs exhausted attempts. Backup & Recovery moved from sidebar to ADMIN Settings tab, with actual audit-derived export/restore timestamps and recent events (up to 1,000 active audit records). Original backup URL redirects to Settings. Security Audit includes summary counters, entity selector, pagination. Reports schedule and delay charts are derived from live summary data, not fabricated figures.
+
+Limitations: This is a focused improvement, not a complete redesign of all five role dashboards. Full production deployment and end-to-end browser/SMTP/MySQL testing have NOT been performed. Backup activity is audit-derived and does not mean backups are stored on the server; old archived events may not appear. Database schema unchanged. Do not publish without reviewing npm audit and restore safety.

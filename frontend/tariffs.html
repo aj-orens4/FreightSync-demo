@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tariffs — FreightSync</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content fs-workspace">
+      <div class="fs-page-intro"><div><div class="fs-eyebrow">COMMERCIAL OPERATIONS / RATE CONTROL</div><h2>Rate & Tariff Management</h2><p>Review pricing, approval status and effective freight charges.</p></div></div>
+      <div class="panel fs-list-panel">
+        <div class="toolbar">
+          <div class="filters">
+            <select id="filter-status">
+              <option value="">All Statuses</option>
+              <option>Draft</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option><option>Archived</option>
+            </select>
+          </div>
+          <button class="btn accent" id="btn-new-tariff">+ New Tariff</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Code</th><th>Service</th><th>Vehicle</th><th>Base Rate</th><th>Surcharge</th><th>Total</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="tariffs-body"><tr><td colspan="8" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Tariff Modal -->
+<div class="modal-overlay" id="tariff-modal">
+  <div class="modal">
+    <h3>New Tariff</h3>
+    <form id="tariff-form">
+      <div class="field-row">
+        <div class="field"><label>Service Type</label><input type="text" id="t-service" placeholder="e.g. Standard Freight" required></div>
+        <div class="field"><label>Vehicle Type</label><input type="text" id="t-vehicle" placeholder="e.g. 6-Wheeler Truck" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Weight Min (kg)</label><input type="number" id="t-weight-min" value="0" required></div>
+        <div class="field"><label>Weight Max (kg)</label><input type="number" id="t-weight-max" value="1000" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Distance Min (km)</label><input type="number" id="t-dist-min" value="0" required></div>
+        <div class="field"><label>Distance Max (km)</label><input type="number" id="t-dist-max" value="300" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Base Rate (₱)</label><input type="number" id="t-base" required></div>
+        <div class="field"><label>Fuel Surcharge (₱)</label><input type="number" id="t-fuel" value="0"></div>
+        <div class="field"><label>Additional Charges (₱)</label><input type="number" id="t-addl" value="0"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Effective Date</label><input type="date" id="t-effective" required></div>
+        <div class="field"><label>Expiration Date (optional)</label><input type="date" id="t-expiration"></div>
+      </div>
+      <div class="field">
+        <label>Computed Total Freight Cost</label>
+        <div id="t-total-preview" style="font-size:18px;font-weight:700;color:var(--navy)">₱0.00</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn outline" id="btn-cancel-tariff">Cancel</button>
+        <button type="submit" class="btn accent">Save as Draft</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/tariffs.js"></script>
+</body>
+</html>

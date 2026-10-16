@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedules — FreightSync</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="filters">
+            <select id="filter-status">
+              <option value="">All Statuses</option>
+              <option>Scheduled</option><option>In Transit</option><option>Delayed</option><option>Completed</option><option>Cancelled</option>
+            </select>
+          </div>
+          <button class="btn accent" id="btn-new-schedule">+ New Schedule</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Code</th><th>Route</th><th>Departure</th><th>Arrival</th><th>Vehicle</th><th>Status</th><th>Delay / Notes</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="schedules-body"><tr><td colspan="8" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Schedule Modal -->
+<div class="modal-overlay" id="schedule-modal">
+  <div class="modal">
+    <h3>New Schedule</h3>
+    <form id="schedule-form">
+      <div class="field">
+        <label>Route</label>
+        <select id="sc-route" required></select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Departure Location</label><input type="text" id="sc-dep-loc" required></div>
+        <div class="field"><label>Arrival Location</label><input type="text" id="sc-arr-loc" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Departure Time</label><input type="datetime-local" id="sc-dep-time" required></div>
+        <div class="field"><label>Arrival Time</label><input type="datetime-local" id="sc-arr-time" required></div>
+      </div>
+      <div class="field"><label>Vehicle Code</label><input type="text" id="sc-vehicle" placeholder="e.g. TRK-101" required></div>
+      <div class="modal-actions">
+        <button type="button" class="btn outline" id="btn-cancel-schedule">Cancel</button>
+        <button type="submit" class="btn accent">Save Schedule</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delay Modal -->
+<div class="modal-overlay" id="delay-modal">
+  <div class="modal">
+    <h3>Log Delay</h3>
+    <form id="delay-form">
+      <input type="hidden" id="delay-schedule-id">
+      <div class="field"><label>Delay Reason</label><textarea id="delay-reason" rows="3" required></textarea></div>
+      <div class="field"><label>Revised Arrival Time</label><input type="datetime-local" id="delay-revised-time" required></div>
+      <div class="modal-actions">
+        <button type="button" class="btn outline" id="btn-cancel-delay">Cancel</button>
+        <button type="submit" class="btn accent">Log Delay</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="schedule-detail-modal">
+  <div class="modal">
+    <h3 id="schedule-detail-title">Schedule Details</h3>
+    <div id="schedule-detail-body"><div class="empty-state">Loading…</div></div>
+    <div class="modal-actions"><button type="button" class="btn outline" id="btn-close-schedule-detail">Close</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/schedules.js"></script>
+</body>
+</html>

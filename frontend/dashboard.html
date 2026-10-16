@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — FreightSync</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/freightsync-studio.css?v=20261016">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="app-sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar" id="app-topbar"></div>
+    <div class="content fs-command-home">
+      <div class="fs-home-masthead"><div class="fs-home-masthead__label">FREIGHTSYNC / NETWORK OPERATIONS</div><div class="greeting-row">
+        <div>
+          <div class="greeting-text" id="greeting-text">—</div>
+          <div class="greeting-sub" id="greeting-sub"></div>
+        </div>
+        <div class="dashboard-quick-actions"><button class="btn outline" id="notification-btn" title="Upcoming reminders"><span class="fs-action-icon">🔔</span><span>Activity alerts</span><span class="notification-count" id="notification-count" hidden>0</span></button><button class="btn outline" id="mini-calendar-btn" title="Quick calendar preview">
+          <span class="fs-action-icon">▦</span><span>Transit calendar</span>
+        </button></div>
+      </div>
+
+      </div>
+      <div class="role-dashboard-hero" id="role-dashboard-hero">
+        <div><div class="role-dashboard-kicker" id="role-dashboard-kicker">Workspace</div><h2 id="role-dashboard-title">Your FreightSync workspace</h2><p id="role-dashboard-desc"></p></div>
+        <div class="role-dashboard-actions" id="role-dashboard-actions"></div>
+      </div>
+
+      <div class="role-context" id="role-context"><strong>Your workspace</strong><span id="role-context-text">Loading role permissions…</span></div>
+
+      <div class="fs-section-title"><div><span>01 / LIVE OPERATIONS</span><h3>Network pulse</h3></div><small>Current system records</small></div>
+      <div class="stat-grid" id="widget-kpis" data-widget="kpis">
+        <div class="stat-card stat-card--clickable" data-kpi="routes" title="Click for details">
+          <div class="value">—</div><div class="label">Active Routes</div>
+        </div>
+        <div class="stat-card stat-card--clickable" data-kpi="tariffs" title="Click for details">
+          <div class="value">—</div><div class="label">Approved Tariffs</div>
+        </div>
+        <div class="stat-card stat-card--clickable" data-kpi="sops" title="Click for details">
+          <div class="value">—</div><div class="label">Published SOPs</div>
+        </div>
+        <div class="stat-card stat-card--clickable" data-kpi="schedules" title="Click for details">
+          <div class="value">—</div><div class="label">Schedules Today</div>
+        </div>
+      </div>
+
+      <div class="fs-section-title"><div><span>02 / NETWORK INTELLIGENCE</span><h3>Operations workspace</h3></div><small>Routes and recent activity</small></div>
+      <div class="grid grid--split">
+        <div class="widget-card map-card" id="widget-map" data-widget="map">
+          <div class="map-card__header">
+            <div class="widget-card__header">
+              <div>
+                <h3>Service Network Overview</h3>
+                <div class="widget-card__subtitle">Active routes and how they connect</div>
+              </div>
+            </div>
+            <div class="map-search-row">
+              <input type="text" id="map-search-input" placeholder="Search a route, vehicle, or type a command (e.g. &quot;delayed&quot;, &quot;reset&quot;)">
+              <button type="button" class="btn small outline" id="map-search-btn">Go</button>
+            </div>
+          </div>
+          <div class="map-card__map" id="network-map"><div class="empty-state">Loading…</div></div>
+          <div class="map-card__footer" id="network-map-footer"></div>
+        </div>
+
+        <div class="widget-card" id="widget-activity" data-widget="activity">
+          <div class="widget-card__header"><h3>Recent Activity</h3></div>
+          <div class="activity-feed" id="activity-feed"><div class="empty-state">Loading…</div></div>
+        </div>
+      </div>
+
+      <div class="fs-section-title"><div><span>03 / PERFORMANCE</span><h3>Operational breakdown</h3></div><small>Recorded outcomes</small></div>
+      <div class="chart-grid">
+        <div class="panel chart-panel" id="widget-route-chart" data-widget="routeChart">
+          <h2>Route Status Breakdown</h2>
+          <p class="chart-subtitle">Current distribution of all routes by status</p>
+          <div id="chart-route-status"><div class="empty-state">Loading…</div></div>
+        </div>
+        <div class="panel chart-panel" id="widget-schedule-chart" data-widget="scheduleChart">
+          <h2>Schedule Outcomes</h2>
+          <p class="chart-subtitle">On-time vs delayed vs other outcomes across all schedules</p>
+          <div id="chart-schedule-outcomes"><div class="empty-state">Loading…</div></div>
+        </div>
+      </div>
+
+      <div class="panel" id="widget-upcoming" data-widget="upcoming">
+        <h2>Upcoming Schedules</h2>
+        <table>
+          <thead><tr><th>Code</th><th>Route</th><th>Departure</th><th>Arrival</th><th>Vehicle</th><th>Status</th></tr></thead>
+          <tbody id="upcoming-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick calendar preview popup (does not navigate away) -->
+<div class="modal-overlay" id="mini-calendar-modal">
+  <div class="modal" style="width:360px">
+    <div class="mini-cal-header">
+      <button class="btn small outline" id="mini-cal-prev">&lsaquo;</button>
+      <h3 id="mini-cal-title" style="margin:0"></h3>
+      <button class="btn small outline" id="mini-cal-next">&rsaquo;</button>
+    </div>
+    <div class="mini-cal-dow-row" id="mini-cal-dow"></div>
+    <div class="mini-cal-grid" id="mini-cal-grid"></div>
+    <div class="modal-actions">
+      <a href="calendar.html" class="btn outline small">Open Full Calendar</a>
+      <button type="button" class="btn small" id="mini-cal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick notifications popup -->
+<div class="modal-overlay" id="notification-modal">
+  <div class="modal quick-list-modal">
+    <div class="modal-heading-row"><div><h3>Notifications</h3><p class="settings-desc">Your upcoming personal reminders.</p></div><a href="calendar.html" class="btn outline small">Open Calendar</a></div>
+    <div id="notification-list" class="notification-list"><div class="empty-state">Loading…</div></div>
+    <div class="modal-actions"><button type="button" class="btn outline" id="notification-close">Close</button></div>
+  </div>
+</div>
+
+<!-- Reusable detail popup — used by KPI cards, Recent Activity items, and chart segments -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" style="width:440px">
+    <h3 id="detail-modal-title">Details</h3>
+    <div id="detail-modal-body"><div class="empty-state">Loading…</div></div>
+    <div class="modal-actions">
+      <a href="#" class="btn accent small" id="detail-modal-link">View Full Page</a>
+      <button type="button" class="btn small outline" id="detail-modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/routemap.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+const r=require('express').Router();const c=require('../controllers/backup.controller');const {authenticate,authorize}=require('../middleware/auth');r.use(authenticate,authorize('ADMIN'));r.get('/export',c.create);r.post('/restore',c.restore);module.exports=r;

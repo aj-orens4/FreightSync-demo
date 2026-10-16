@@ -1,0 +1,13 @@
+{
+  "name": "FreightSync - Service Provider & Network Control",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [4000, 3000],
+  "portsAttributes": {
+    "4000": { "label": "Backend API", "onAutoForward": "notify" },
+    "3000": { "label": "Frontend (open this one)", "onAutoForward": "openPreview" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "remoteUser": "node"
+}

@@ -1,0 +1,1 @@
+const r=require('express').Router(); const c=require('../controllers/notifications.controller'); const {authenticate}=require('../middleware/auth'); r.use(authenticate); r.get('/',c.list); r.patch('/read-all',c.readAll); r.patch('/:id/read',c.readOne); module.exports=r;
