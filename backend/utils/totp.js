@@ -1,0 +1,11 @@
+const crypto=require('crypto');
+const pool=require('../config/db');
+const {createChallenge}=require('./twoFactor');
+function base32(buf){const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let bits=0,val=0,out='';for(const b of buf){val=(val<<8)|b;bits+=8;while(bits>=5){out+=chars[(val>>>(bits-=5))&31];}}if(bits)out+=chars[(val<<(5-bits))&31];return out;}
+function decode(s){const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let bits=0,val=0,out=[];for(const c of s.replace(/=|\s/g,'').toUpperCase()){const i=chars.indexOf(c);if(i<0)throw Error('Invalid secret');val=(val<<5)|i;bits+=5;if(bits>=8){out.push((val>>>(bits-=8))&255);}}return Buffer.from(out);}
+function token(secret,step){const buf=Buffer.alloc(8);buf.writeBigUInt64BE(BigInt(step));const h=crypto.createHmac('sha1',decode(secret)).update(buf).digest();const offset=h[19]&15;return String((h.readUInt32BE(offset)&0x7fffffff)%1000000).padStart(6,'0');}
+function check(secret,code){if(!/^\d{6}$/.test(String(code)))return false;const step=Math.floor(Date.now()/30000);for(let i=-1;i<=1;i++){const expected=token(secret,step+i);if(crypto.timingSafeEqual(Buffer.from(expected),Buffer.from(code)))return true;}return false;}
+function encrypt(secret){const key=crypto.createHash('sha256').update(process.env.JWT_SECRET).digest();const iv=crypto.randomBytes(12);const c=crypto.createCipheriv('aes-256-gcm',key,iv);const data=Buffer.concat([c.update(secret,'utf8'),c.final()]);return [iv.toString('hex'),c.getAuthTag().toString('hex'),data.toString('hex')].join(':');}
+function decrypt(stored){const [iv,tag,data]=stored.split(':');const key=crypto.createHash('sha256').update(process.env.JWT_SECRET).digest();const c=crypto.createDecipheriv('aes-256-gcm',key,Buffer.from(iv,'hex'));c.setAuthTag(Buffer.from(tag,'hex'));return Buffer.concat([c.update(Buffer.from(data,'hex')),c.final()]).toString('utf8');}
+async function ensure(){await pool.query('CREATE TABLE IF NOT EXISTS user_totp (user_id INT NOT NULL PRIMARY KEY, secret_encrypted TEXT NOT NULL, confirmed TINYINT(1) NOT NULL DEFAULT 0, last_step BIGINT NOT NULL DEFAULT 0, FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE)');}
+module.exports={base32,token,check,encrypt,decrypt,ensure};
