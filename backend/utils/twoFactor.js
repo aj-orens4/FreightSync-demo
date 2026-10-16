@@ -47,9 +47,10 @@ function makeTrustedDevice(userId){ return jwt.sign({sub:userId,purpose:'trusted
 function isTrustedDevice(token,userId){ try{const p=jwt.verify(token,process.env.JWT_SECRET);return p.purpose==='trusted_device' && Number(p.sub)===Number(userId);}catch(_){return false;} }
 async function sendCode(email, code){
   const configured=process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && process.env.SMTP_FROM;
+  if (process.env.NODE_ENV === 'production' && !configured) throw new Error('Email verification is not configured. Configure SMTP before allowing production logins.');
   if(!configured){ console.log(`[FreightSync DEV 2FA] Verification code for ${email}: ${code}`); return {devMode:true}; }
   if(!nodemailer) throw new Error('Email support is not installed. Run npm install.');
-  const transporter=nodemailer.createTransport({host:process.env.SMTP_HOST,port:Number(process.env.SMTP_PORT||587),secure:String(process.env.SMTP_SECURE||'false')==='true',auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS}});
+  const transporter=nodemailer.createTransport({host:process.env.SMTP_HOST,port:Number(process.env.SMTP_PORT||587),secure:String(process.env.SMTP_SECURE||'false')==='true',auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS},connectionTimeout:10000,greetingTimeout:10000,socketTimeout:15000});
   await transporter.sendMail({from:process.env.SMTP_FROM,to:email,subject:'Your FreightSync verification code',text:`Your FreightSync verification code is ${code}. It expires in 10 minutes. If you did not try to sign in, contact your administrator.`});
   return {devMode:false};
 }
