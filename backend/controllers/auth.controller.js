@@ -59,7 +59,7 @@ async function verifyAuthenticator(req,res,next){
     const setup=Boolean(setup_token);
     const payload=jwt.verify(setup?setup_token:challenge_id,process.env.JWT_SECRET,{algorithms:['HS256']});
     if(payload.purpose!==(setup?'totp_setup':'totp_login'))return fail(res,'Invalid verification session',401);
-    if(!/^\\d{6}$/.test(String(code||'')))return fail(res,'Enter a six-digit authenticator code',400);
+    if(!/^[0-9]{6}$/.test(String(code||'')))return fail(res,'Enter a six-digit authenticator code',400);
     await totp.ensure();
     const [records]=await pool.query('SELECT secret_encrypted,confirmed,last_step FROM user_totp WHERE user_id=?',[payload.sub]);
     if(!records.length || (setup && records[0].confirmed) || (!setup && !records[0].confirmed))return fail(res,'Authenticator setup is unavailable',403);
