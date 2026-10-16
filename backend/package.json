@@ -4,7 +4,7 @@
   "description": "FreightSync - Service Provider & Network Control - Backend API",
   "main": "server.js",
   "scripts": {
-    "start": "node utils/initProductionDb.js && node utils/bootstrapAdmin.js && node server.js",
+    "start": "node utils/initProductionDb.js && node utils/bootstrapAdmin.js && node utils/recoverAdmin.js && node server.js",
     "dev": "nodemon server.js",
     "seed": "node utils/seedAdmin.js"
   },
