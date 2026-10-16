@@ -43,11 +43,21 @@ async function apiRequest(path, { method = 'GET', body = null } = {}) {
   const token = Auth.getToken();
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      method, headers, body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal
+    });
+  } catch (error) {
+    throw new Error(error.name === 'AbortError'
+      ? 'The server did not respond within 20 seconds. Please try again.'
+      : 'Cannot connect to FreightSync. Check your connection and try again.');
+  } finally {
+    clearTimeout(timeout);
+  }
 
   let json;
   try { json = await res.json(); } catch (e) { json = { success: false, message: 'Invalid server response' }; }
