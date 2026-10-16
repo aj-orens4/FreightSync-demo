@@ -6,6 +6,7 @@ const { logAction } = require('../utils/audit');
 const { validate, EMAIL_PATTERN, USERNAME_PATTERN } = require('../utils/validate');
 const { maskEmail, createChallenge, getResendEligibility, rotateChallenge, verifyChallenge, makeTrustedDevice, isTrustedDevice, sendCode } = require('../utils/twoFactor');
 require('dotenv').config();
+const totp=require('../utils/totp');
 
 // Roles selectable at self-registration. ADMIN is deliberately excluded — an
 // administrator account should be provisioned by an existing admin via
@@ -23,10 +24,25 @@ async function login(req, res, next) {
     if(!(await bcrypt.compare(password,user.password_hash))){ await logAction({userId:user.user_id,action:'LOGIN_FAILED',entityType:'USER',entityId:user.user_id,afterState:{reason:'wrong_password'},ip:req.ip}); return fail(res,'Invalid credentials',401); }
     if(!process.env.JWT_SECRET || process.env.JWT_SECRET.length<32) return fail(res,'Server authentication configuration is invalid',500);
     if(trusted_device && isTrustedDevice(trusted_device,user.user_id)) return finishLogin(res,user,req);
+    await totp.ensure();
+    const [authenticators]=await pool.query('SELECT secret_encrypted,confirmed FROM user_totp WHERE user_id=?',[user.user_id]);
+    if(authenticators.length && authenticators[0].confirmed){
+      const challenge_id=jwt.sign({sub:user.user_id,purpose:'totp_login'},process.env.JWT_SECRET,{expiresIn:'5m'});
+      return ok(res,{requires_2fa:true,method:'authenticator',challenge_id});
+    }
     const challenge=createChallenge(user.user_id);
-    const delivery=await sendCode(user.email,challenge.code);
-    await logAction({userId:user.user_id,action:'2FA_CODE_SENT',entityType:'USER',entityId:user.user_id,ip:req.ip});
-    return ok(res,{requires_2fa:true,challenge_id:challenge.id,masked_email:maskEmail(user.email),dev_mode:delivery.devMode});
+    try{
+      const delivery=await sendCode(user.email,challenge.code);
+      await logAction({userId:user.user_id,action:'2FA_CODE_SENT',entityType:'USER',entityId:user.user_id,ip:req.ip});
+      return ok(res,{requires_2fa:true,method:'email',challenge_id:challenge.id,masked_email:maskEmail(user.email),dev_mode:delivery.devMode});
+    }catch(deliveryError){
+      if(!/restricted to the verified Resend testing address/.test(String(deliveryError.message)))throw deliveryError;
+      const secret=authenticators.length?totp.decrypt(authenticators[0].secret_encrypted):totp.base32(require('crypto').randomBytes(20));
+      if(!authenticators.length)await pool.query('INSERT INTO user_totp(user_id,secret_encrypted,confirmed) VALUES(?,?,0)',[user.user_id,totp.encrypt(secret)]);
+      const setup_token=jwt.sign({sub:user.user_id,purpose:'totp_setup'},process.env.JWT_SECRET,{expiresIn:'10m'});
+      const uri='otpauth://totp/'+encodeURIComponent('FreightSync:'+user.username)+'?secret='+secret+'&issuer=FreightSync&algorithm=SHA1&digits=6&period=30';
+      return ok(res,{requires_2fa:true,method:'authenticator_setup',setup_token,secret,otpauth_uri:uri});
+    }
   } catch(err){ next(err); }
 }
 
@@ -35,6 +51,28 @@ async function finishLogin(res,user,req,trustDevice=false){
   const token=jwt.sign(payload,process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRES_IN||'8h',algorithm:'HS256'});
   await logAction({userId:user.user_id,action:'LOGIN',entityType:'USER',entityId:user.user_id,ip:req.ip});
   return ok(res,{token,user:{user_id:user.user_id,username:user.username,email:user.email,full_name:user.full_name,role:user.role_name,provider_id:user.provider_id,profile_photo:user.profile_photo||null,must_change_password:Boolean(user.must_change_password)},trusted_device:trustDevice?makeTrustedDevice(user.user_id):null});
+}
+
+async function verifyAuthenticator(req,res,next){
+  try{
+    const {setup_token,challenge_id,code,trust_device}=req.body||{};
+    const setup=Boolean(setup_token);
+    const payload=jwt.verify(setup?setup_token:challenge_id,process.env.JWT_SECRET,{algorithms:['HS256']});
+    if(payload.purpose!==(setup?'totp_setup':'totp_login'))return fail(res,'Invalid verification session',401);
+    if(!/^\\d{6}$/.test(String(code||'')))return fail(res,'Enter a six-digit authenticator code',400);
+    await totp.ensure();
+    const [records]=await pool.query('SELECT secret_encrypted,confirmed,last_step FROM user_totp WHERE user_id=?',[payload.sub]);
+    if(!records.length || (setup && records[0].confirmed) || (!setup && !records[0].confirmed))return fail(res,'Authenticator setup is unavailable',403);
+    const secret=totp.decrypt(records[0].secret_encrypted);
+    if(!totp.check(secret,String(code)))return fail(res,'Invalid authenticator code',401);
+    const step=Math.floor(Date.now()/30000);
+    if(!setup && Number(records[0].last_step)>=step-1)return fail(res,'Code already used. Wait for the next code.',401);
+    await pool.query('UPDATE user_totp SET confirmed=1,last_step=? WHERE user_id=?',[step,payload.sub]);
+    const [users]=await pool.query('SELECT u.user_id,u.username,u.email,u.full_name,u.is_active,u.must_change_password,u.provider_id,u.profile_photo,r.role_name FROM users u JOIN roles r ON u.role_id=r.role_id WHERE u.user_id=?',[payload.sub]);
+    if(!users.length||!users[0].is_active)return fail(res,'Account unavailable',403);
+    await logAction({userId:users[0].user_id,action:setup?'2FA_AUTHENTICATOR_ENROLLED':'2FA_AUTHENTICATOR_VERIFIED',entityType:'USER',entityId:users[0].user_id,ip:req.ip});
+    return finishLogin(res,users[0],req,Boolean(trust_device));
+  }catch(e){if(e.name==='JsonWebTokenError'||e.name==='TokenExpiredError')return fail(res,'Verification session expired. Sign in again.',401);next(e);}
 }
 
 async function resendTwoFactor(req,res,next) {
@@ -167,4 +205,4 @@ async function changePassword(req, res, next) {
   } catch (err) { next(err); }
 }
 
-module.exports = { login, verifyTwoFactor, resendTwoFactor, register, me, updateMe, changePassword, SELF_REGISTER_ROLES };
+module.exports = { login, verifyAuthenticator, verifyTwoFactor, resendTwoFactor, register, me, updateMe, changePassword, SELF_REGISTER_ROLES };
