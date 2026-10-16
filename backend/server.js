@@ -9,6 +9,8 @@ const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimit');
 
 const app = express();
+// Render terminates HTTPS at one trusted reverse proxy.
+if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
 // SECURITY CONTROL: Security Headers — sets X-Content-Type-Options, X-Frame-Options,
 // Strict-Transport-Security (once served over HTTPS), and a conservative default CSP.
