@@ -15,7 +15,7 @@ async function main() {
     const [tables] = await conn.query("SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'roles'");
     if (tables[0].n) { console.log('FreightSync schema already present; skipping initialization'); return; }
     let sql = fs.readFileSync(path.join(__dirname, '../../database/schema.sql'), 'utf8');
-    sql = sql.replace(/CREATE DATABASE IF NOT EXISTS freightsync[\\s\\S]*?;/i, '').replace(/\\bUSE freightsync\\s*;/gi, '');
+    sql = sql.replace(/CREATE DATABASE IF NOT EXISTS freightsync[\s\S]*?;/i, '').replace(/\bUSE freightsync\s*;/gi, '');
     // MySQL does not support ADD COLUMN IF NOT EXISTS.
     sql = sql.replace(/ADD COLUMN IF NOT EXISTS/g, 'ADD COLUMN');
     await conn.query(sql);
