@@ -8,7 +8,7 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'freightsync',
   // Aiven managed MySQL requires TLS. Do not disable certificate verification.
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+  ssl: process.env.DB_SSL === 'true' ? { ca: (process.env.DB_CA_CERT || '').replace(/\\n/g, '\n'), rejectUnauthorized: true } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
