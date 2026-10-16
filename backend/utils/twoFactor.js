@@ -46,8 +46,31 @@ function verifyChallenge(id, code) {
 function makeTrustedDevice(userId){ return jwt.sign({sub:userId,purpose:'trusted_device'},process.env.JWT_SECRET,{expiresIn:'10d'}); }
 function isTrustedDevice(token,userId){ try{const p=jwt.verify(token,process.env.JWT_SECRET);return p.purpose==='trusted_device' && Number(p.sub)===Number(userId);}catch(_){return false;} }
 async function sendCode(email, code){
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    const from = process.env.RESEND_FROM_EMAIL;
+    if (!from) throw new Error('Resend sender address is not configured (RESEND_FROM_EMAIL)');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {'Authorization': `Bearer ${resendKey}`, 'Content-Type':'application/json'},
+        body: JSON.stringify({
+          from, to:[email], subject:'Your FreightSync verification code',
+          text:`Your FreightSync verification code is ${code}. It expires in 10 minutes. If you did not try to sign in, contact your administrator.`
+        }),
+        signal:controller.signal
+      });
+      if (!response.ok) {
+        console.error('Resend email delivery failed with HTTP status',response.status);
+        throw new Error('Unable to send verification email. Check the Resend sender domain and API key.');
+      }
+      return {devMode:false};
+    } finally {clearTimeout(timeout);}
+  }
   const configured=process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && process.env.SMTP_FROM;
-  if (process.env.NODE_ENV === 'production' && !configured) throw new Error('Email verification is not configured. Configure SMTP before allowing production logins.');
+  if (process.env.NODE_ENV === 'production' && !configured) throw new Error('Email verification is not configured. Configure RESEND_API_KEY and RESEND_FROM_EMAIL.');
   if(!configured){ console.log(`[FreightSync DEV 2FA] Verification code for ${email}: ${code}`); return {devMode:true}; }
   if(!nodemailer) throw new Error('Email support is not installed. Run npm install.');
   const transporter=nodemailer.createTransport({host:process.env.SMTP_HOST,port:Number(process.env.SMTP_PORT||587),secure:String(process.env.SMTP_SECURE||'false')==='true',auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS},connectionTimeout:10000,greetingTimeout:10000,socketTimeout:15000});
