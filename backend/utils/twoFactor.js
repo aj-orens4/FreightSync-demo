@@ -63,8 +63,11 @@ async function sendCode(email, code){
         signal:controller.signal
       });
       if (!response.ok) {
-        console.error('Resend email delivery failed with HTTP status',response.status);
-        throw new Error('Unable to send verification email. Check the Resend sender domain and API key.');
+        let details = {};
+        try { details = await response.json(); } catch (_) {}
+        console.error('Resend delivery rejected:', response.status, String(details.name || details.error || 'unknown'), String(details.message || '').slice(0,300));
+        if (response.status === 403) throw new Error('Resend rejected verification email (403). The testing sender can only email your verified Resend account address. Verify a sending domain or use the same recipient email.');
+        throw new Error('Unable to send verification email. Check your Resend configuration.');
       }
       return {devMode:false};
     } finally {clearTimeout(timeout);}
