@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { login, verifyTwoFactor, resendTwoFactor, register, me, updateMe, changePassword } = require('../controllers/auth.controller');
+const { login, verifyAuthenticator, verifyTwoFactor, resendTwoFactor, register, me, updateMe, changePassword } = require('../controllers/auth.controller');
 const { authenticate } = require('../middleware/auth');
 const { loginLimiter, twoFactorLimiter } = require('../middleware/rateLimit');
 
 router.post('/login', loginLimiter, login);
+router.post('/verify-authenticator', twoFactorLimiter, verifyAuthenticator);
 router.post('/verify-2fa', twoFactorLimiter, verifyTwoFactor);
 router.post('/resend-2fa', twoFactorLimiter, resendTwoFactor);
 // Enterprise FMS accounts are provisioned by an ADMIN so roles/provider scope cannot be self-selected.
