@@ -28,6 +28,7 @@ if (process.env.NODE_ENV === 'production') app.use(express.static(path.join(__di
 
 app.get('/health', (req, res) => res.json({ status: 'ok', module: 'FreightSync - Service Provider & Network Control' }));
 
+app.use('/api/v1/setup', require('./routes/setup.routes'));
 app.use('/api/v1', apiRouter);
 
 // Production browser routes fall back to the login page; unknown API routes stay JSON.
