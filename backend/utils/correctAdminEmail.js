@@ -6,8 +6,8 @@ async function main() {
   const target=(process.env.ADMIN_EMAIL_CORRECTION||'').trim().toLowerCase();
   if (!target) return;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(target)) throw new Error('Invalid admin correction email');
-  const original=(process.env.BOOTSTRAP_ADMIN_EMAIL||'').trim().toLowerCase();
-  if (!original) throw new Error('Missing original administrator email');
+  const original='ajbornales44@gmail.com';
+  if (target !== 'ajbornales4@gmail.com') throw new Error('Unexpected target administrator email');
   const [users]=await pool.query("SELECT u.user_id,u.email FROM users u JOIN roles r ON u.role_id=r.role_id WHERE u.username='admin' AND r.role_name='ADMIN' LIMIT 1");
   if (users.length!==1) throw new Error('Administrator not found');
   if (users[0].email.toLowerCase()===target) {console.log('Administrator email correction already applied');return;}
